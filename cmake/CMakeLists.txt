@@ -44,7 +44,7 @@ install(FILES OpenSimMacros.cmake
     DESTINATION "${OPENSIM_INSTALL_CMAKEDIR}"
     RENAME UseOpenSim.cmake)
 
-install(EXPORT OpenSimTargets DESTINATION "${OPENSIM_INSTALL_CMAKEDIR}")
+#install(EXPORT OpenSimTargets DESTINATION "${OPENSIM_INSTALL_CMAKEDIR}")
 
 if(OPENSIM_COPY_DEPENDENCIES AND APPLE)
     # Temporary hack to package dependencies on Macs.

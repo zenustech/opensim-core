@@ -19,25 +19,25 @@ OpenSimAddLibrary(
     KIT Common
     AUTHORS "Clay_Anderson-Ayman_Habib-Peter_Loan"
     # Clients of osimCommon need not link to BTK or ezc3d.
-    LINKLIBS PUBLIC ${Simbody_LIBRARIES} spdlog::spdlog
+    LINKLIBS PUBLIC ${Simbody_LIBRARIES} spdlog
              PRIVATE ${BTK_LIBRARIES} ${ezc3d_LIBRARY}
     INCLUDES ${INCLUDES}
     SOURCES ${SOURCES}
     TESTDIRS "Test"
     )
 
-if(WIN32)
+#if(WIN32)
     # On Windows only, debug libraries cannot be mixed with release
     # libraries, and we must copy the DLLs from the dependencies
     # into OpenSim's build directory (so that the DLLs are found
     # when running the tests).
-    add_dependencies(osimCommon
-        Simbody_CONFIG_check Copy_Simbody_DLLs)
-    if(WITH_EZC3D)
-        add_dependencies(osimCommon Copy_ezc3d_DLLs)
-    endif()
-    if(WITH_BTK)
-        add_dependencies(osimCommon Copy_BTK_DLLs)
-    endif()
-endif()
+    #add_dependencies(osimCommon
+    #Simbody_CONFIG_check Copy_Simbody_DLLs)
+    #if(WITH_EZC3D)
+    #add_dependencies(osimCommon Copy_ezc3d_DLLs)
+    #endif()
+    #if(WITH_BTK)
+    #add_dependencies(osimCommon Copy_BTK_DLLs)
+    #endif()
+    #endif()
   

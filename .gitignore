@@ -25,7 +25,7 @@ out.log
 .DS_Store
 
 # dependencies
-dependencies/*
+#dependencies/*
 !dependencies/CMakeLists.txt
 !dependencies/*.cmake
 !dependencies/*.patch

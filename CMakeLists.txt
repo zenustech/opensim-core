@@ -9,6 +9,18 @@ project(OpenSim)
 #----------------------------------------------------
 
 cmake_minimum_required(VERSION 3.2)
+set(CMAKE_BUILD_TYPE Release)
+
+if (WIN32)
+    include_directories(dependencies/simbody/Platform/Windows/include)
+endif()
+include_directories(
+        dependencies/simbody/SimTKcommon/include              dependencies/simbody/SimTKcommon/Simulation/include
+ dependencies/simbody/Simbody/include                 dependencies/simbody/SimTKcommon/Mechanics/include    dependencies/simbody/SimTKcommon/SmallMatrix/include
+ dependencies/simbody/Simbody/Visualizer/include      dependencies/simbody/SimTKcommon/Polynomial/include   dependencies/simbody/SimTKmath/Geometry/include
+ dependencies/simbody/SimTKcommon/BigMatrix/include   dependencies/simbody/SimTKcommon/Random/include       dependencies/simbody/SimTKmath/include
+ dependencies/simbody/SimTKcommon/Geometry/include    dependencies/simbody/SimTKcommon/Scalar/include       dependencies/simbody/SimTKmath/Integrators/include
+)
 
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
@@ -127,7 +139,7 @@ mark_as_advanced(PROCESSOR_COUNT)
 option(OPENSIM_DOXYGEN_USE_MATHJAX "Try to use MathJax to render Doxygen
 equations. If OFF, LATEX is used instead if you have it; otherwise we use
 MathJax from the internet (we don't download it). If we cannot download MathJax
-from the internet, we turn this option OFF." ON)
+from the internet, we turn this option OFF." OFF)
 
 # Simbody.
 # This will be initialized to the environment variable of the same name
@@ -140,7 +152,7 @@ OpenSim installation. This should be set to ON when making a relocatable
 distribution, and should be set to OFF when packaging for Homebrew, Debian,
 etc. On Linux and macOS: we use relative RPATHs when ON, and absolute RPATHs
 when OFF. For most users, this should also be on if BUILD_JAVA_WRAPPING or 
-BUILD_PYTHON_WRAPPING is ON, so if this OFF, a warning is thrown." ON)
+BUILD_PYTHON_WRAPPING is ON, so if this OFF, a warning is thrown." OFF)
 mark_as_advanced(OPENSIM_COPY_DEPENDENCIES)
 
 option(OPENSIM_PYTHON_STANDALONE "Make the Python package standalone, meaning
@@ -159,7 +171,7 @@ mark_as_advanced(OPENSIM_PYTHON_STANDALONE) # Mainly for packagers; not users.
 #   debian, homebrew, conda: OFF (can have a separate C++ library package)
 
 option(BUILD_API_ONLY "Build/install only headers, libraries,
-wrapping, tests; not applications (opensim, ik, rra, etc.)." OFF)
+wrapping, tests; not applications (opensim, ik, rra, etc.)." ON)
 
 option(OPENSIM_DISABLE_LOG_FILE
 "Disable OpenSim from automatically creating 'opensim.log'.
@@ -187,11 +199,11 @@ mark_as_advanced(OPENSIM_BUILD_INDIVIDUAL_APPS)
 # Moco settings.
 # --------------
 option(OPENSIM_WITH_CASADI
-        "Build CasADi support for Moco (MocoCasADiSolver)." ON)
+    "Build CasADi support for Moco (MocoCasADiSolver)." OFF)
 add_feature_info(WITH_CASADI OPENSIM_WITH_CASADI
         "Build CasADi support for Moco (OPENSIM_WITH_CASADI)")
 option(OPENSIM_WITH_TROPTER
-        "Build the tropter optimal control library, for use in MocoTropterSolver." ON)
+    "Build the tropter optimal control library, for use in MocoTropterSolver." OFF)
 add_feature_info(WITH_TROPTER OPENSIM_WITH_TROPTER
         "Build the tropter optimal control library (OPENSIM_WITH_TROPTER)")
 
@@ -739,13 +751,22 @@ else()
     set(WITH_BTK false)
 endif()
 
-find_package(spdlog REQUIRED
-        HINTS "${OPENSIM_DEPENDENCIES_DIR}/spdlog")
+add_subdirectory(dependencies/spdlog)
+add_library(spdlog::spdlog ALIAS spdlog)
+#find_package(spdlog REQUIRED HINTS "${OPENSIM_DEPENDENCIES_DIR}/spdlog")
 
 
-if(NOT SIMBODY_HOME AND OPENSIM_DEPENDENCIES_DIR)
-    set(SIMBODY_HOME "${OPENSIM_DEPENDENCIES_DIR}/simbody")
-endif()
+#if(NOT SIMBODY_HOME AND OPENSIM_DEPENDENCIES_DIR)
+#    set(SIMBODY_HOME "${OPENSIM_DEPENDENCIES_DIR}/simbody")
+#endif()
+set(SIMBODY_HOME dependencies/simbody)
+add_subdirectory(dependencies/simbody)
+set(Simbody_INCLUDE_DIR
+    dependencies/simbody/Simbody/include/
+    dependencies/simbody/SimTKcommon/include/
+    dependencies/simbody/SimTKmath/include/
+)
+#set(Simbody_BIN_DIR dependencies/simbody/Simbody/include/)
 
 
 # Find Simbody.
@@ -764,25 +785,23 @@ if("${SIMBODY_HOME}" STREQUAL "")
     # we shouldn't let that fail silently and still search for
     # Simbody elsewhere; they may never realize
     # we are not using their requested installation of Simbody.
-    find_package(Simbody ${SIMBODY_VERSION_TO_USE}
-        NO_MODULE)
+    #find_package(Simbody ${SIMBODY_VERSION_TO_USE} NO_MODULE)
 else()
     # Find the package using the user-specified path.
     # NO_DEFAULT_PATH will cause find_package to only
     # look in the provided PATHS.
-    find_package(Simbody ${SIMBODY_VERSION_TO_USE}
-        PATHS "${SIMBODY_HOME}" NO_MODULE NO_DEFAULT_PATH)
+    #find_package(Simbody ${SIMBODY_VERSION_TO_USE} PATHS "${SIMBODY_HOME}" NO_MODULE NO_DEFAULT_PATH)
 endif()
 # This variable appears in the CMake GUI and could confuse users,
 # since this variable can't be changed manually.
 mark_as_advanced(Simbody_DIR)
 
 # If Simbody is not found, Simbody_FOUND is false.
-if(NOT Simbody_FOUND)
-    message(FATAL_ERROR "
-        Simbody ${SIMBODY_VERSION_TO_USE} not found. Install Simbody and set
-        SIMBODY_HOME to the installation directory of Simbody.")
-endif()
+#if(NOT Simbody_FOUND)
+#message(FATAL_ERROR "
+#Simbody ${SIMBODY_VERSION_TO_USE} not found. Install Simbody and set
+#SIMBODY_HOME to the installation directory of Simbody.")
+#endif()
 
 # Check if Simbody targets were built using same BUILD_TYPE/CONFIGURATION as
 # current OpenSim build. If build/configuration types mismatch, stop the build.
@@ -811,10 +830,10 @@ endif()
 # so that the tests and examples can run without modifying the PATH
 # (that is, put Simbody's dll's in the same directory as OpenSim's
 # executables and libraries).
-OpenSimCopyDependencyDLLsForWin(DEP_NAME Simbody
-        DEP_BIN_DIR "${Simbody_BIN_DIR}")
+#OpenSimCopyDependencyDLLsForWin(DEP_NAME Simbody
+#DEP_BIN_DIR "${Simbody_BIN_DIR}")
 if(WIN32)
-    add_dependencies(Copy_Simbody_DLLs Simbody_CONFIG_check)
+	#add_dependencies(Copy_Simbody_DLLs Simbody_CONFIG_check)
 endif()
 
 
@@ -822,7 +841,7 @@ endif()
 # -----------------------------------------------------------
 # TODO no longer necessary; Simbody's library targets provide the 
 # include directories.
-include_directories("${Simbody_INCLUDE_DIR}")
+#include_directories(${Simbody_INCLUDE_DIR})
 
 
 # CasADi
@@ -889,10 +908,10 @@ if(${OPENSIM_COPY_DEPENDENCIES})
         # DIRECTORY.
 
         # include
-        file(RELATIVE_PATH install_simbodyincludedir
-            "${Simbody_ROOT_DIR}" "${Simbody_INCLUDE_DIR}")
-        install(DIRECTORY "${Simbody_INCLUDE_DIR}/"
-                DESTINATION "${OPENSIM_INSTALL_SIMBODYDIR}/${install_simbodyincludedir}")
+        #file(RELATIVE_PATH install_simbodyincludedir
+        #"${Simbody_ROOT_DIR}" "${Simbody_INCLUDE_DIR}")
+        #install(DIRECTORY "${Simbody_INCLUDE_DIR}/"
+        #DESTINATION "${OPENSIM_INSTALL_SIMBODYDIR}/${install_simbodyincludedir}")
     
         # lib (and cmake, pkgconfig)
         file(RELATIVE_PATH install_simbodylibdir 
@@ -962,11 +981,11 @@ include(CTest)
 if(MSVC OR XCODE)
     set(OPENSIM_TEST_BUILD_CONFIG --build-config ${CMAKE_CFG_INTDIR})
 endif()
-add_custom_target(RUN_TESTS_PARALLEL
-    COMMAND ${CMAKE_CTEST_COMMAND} --parallel ${PROCESSOR_COUNT}
-                                   ${OPENSIM_TEST_BUILD_CONFIG}
-                                   --output-on-failure
-                                   )
+#add_custom_target(RUN_TESTS_PARALLEL
+#COMMAND ${CMAKE_CTEST_COMMAND} --parallel ${PROCESSOR_COUNT}
+#${OPENSIM_TEST_BUILD_CONFIG}
+#--output-on-failure
+#)
 
 # Create buildinfo.txt file and place under sdk to include product version,
 # platform and compiler for troubleshooting purposes
@@ -1018,12 +1037,12 @@ add_subdirectory(Vendors)
 
 add_subdirectory(OpenSim)
 if(NOT BUILD_API_ONLY)
-    add_subdirectory(Applications)
+    #add_subdirectory(Applications)
 endif()
-add_subdirectory(Bindings)
+#add_subdirectory(Bindings)
 
 add_subdirectory(cmake)
-add_subdirectory(doc)
+#add_subdirectory(doc)
 
 # Print a list of the dependencies that were found, and the features the user
 # chose.
