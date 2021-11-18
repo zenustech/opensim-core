@@ -815,13 +815,13 @@ string(CONCAT MESSAGE
     "the current OpenSim BUILD_TYPE or CONFIGURATION.")
 
 if(WIN32)
-    string(TOLOWER "${Simbody_CONFIGURATION}" Simbody_CONFIGURATION_STR)
-    add_custom_target(Simbody_CONFIG_check ALL
-        COMMAND "set" "Simbody_CONFIG=${Simbody_CONFIGURATION_STR}"
-        COMMAND "if"
-           "\"%Simbody_CONFIG:$<LOWER_CASE:$<CONFIG>>=%\"==\"%Simbody_CONFIG%\""
-           "exit" "1"
-        COMMENT ${MESSAGE})
+	#string(TOLOWER "${Simbody_CONFIGURATION}" Simbody_CONFIGURATION_STR)
+	#add_custom_target(Simbody_CONFIG_check ALL
+	#COMMAND "set" "Simbody_CONFIG=${Simbody_CONFIGURATION_STR}"
+	#COMMAND "if"
+	#"\"%Simbody_CONFIG:$<LOWER_CASE:$<CONFIG>>=%\"==\"%Simbody_CONFIG%\""
+	#"exit" "1"
+	#COMMENT ${MESSAGE})
 endif()
 
 # Copy Simbody DLLs to build tree.
