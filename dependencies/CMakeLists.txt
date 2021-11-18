@@ -43,18 +43,21 @@ endfunction()
 
 # Set the default for CMAKE_BUILD_TYPE.
 function(SetDefaultCMakeBuildType)
-    # CMAKE_BUILD_TYPE is only applicable for single configuration generators.
-    if(NOT CMAKE_CONFIGURATION_TYPES)
-        set(DOCSTRING "Build type to use for dependencies. Possible values --")
-        set(DOCSTRING "${DOCSTRING} Debug, Release, RelWithDebInfo,")
-        set(DOCSTRING "${DOCSTRING} MinSizeRel.")
+    if (NOT CMAKE_BUILD_TYPE)
+        # CMAKE_BUILD_TYPE is only applicable for single configuration generators.
+        if(NOT CMAKE_CONFIGURATION_TYPES)
+            set(DOCSTRING "Build type to use for dependencies. Possible values --")
+            set(DOCSTRING "${DOCSTRING} Debug, Release, RelWithDebInfo,")
+            set(DOCSTRING "${DOCSTRING} MinSizeRel.")
 
-        set(CMAKE_BUILD_TYPE
-            RelWithDebInfo
-            CACHE
-            STRING
-            ${DOCSTRING})
-    endif()
+            set(CMAKE_BUILD_TYPE Release)
+            #set(CMAKE_BUILD_TYPE
+            #RelWithDebInfo
+            #CACHE
+            #STRING
+            #${DOCSTRING})
+        endif()
+        endif()
 endfunction()
 
 

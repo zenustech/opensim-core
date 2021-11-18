@@ -10,7 +10,9 @@
 #    (5) Build examples
 #
 #-------------------------------------------------------------------------------
+if (NOT CMAKE_BUILD_TYPE)
 set(CMAKE_BUILD_TYPE Release)
+endif()
 if(MSVC)
     # To properly support Visual Studio 2015.
     set(SIMBODY_REQUIRED_CMAKE_VERSION 3.1.3)
@@ -278,9 +280,9 @@ endif()
 
 
 if(NOT MSVC AND NOT XCODE AND NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE Release CACHE STRING
-        "Debug, RelWithDebInfo (recommended), or Release build"
-        FORCE)
+    #set(CMAKE_BUILD_TYPE Release CACHE STRING
+    #"Debug, RelWithDebInfo (recommended), or Release build"
+    #FORCE)
 endif()
 
 
