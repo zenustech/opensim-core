@@ -1046,7 +1046,7 @@ endif()
 
 add_subdirectory(cmake)
 #add_subdirectory(doc)
-target_link_libraries(osimCommon PUBLIC SimTKcommon SimTKmath Simbody)
+target_link_libraries(osimCommon PUBLIC SimTKcommon SimTKmath SimTKsimbody)
 
 # Print a list of the dependencies that were found, and the features the user
 # chose.
