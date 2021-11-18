@@ -137,7 +137,7 @@ if (OPENSIM_WITH_TROPTER)
 endif ()
 
 target_include_directories(osimMoco INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 set_target_properties(osimMoco PROPERTIES

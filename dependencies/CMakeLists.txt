@@ -11,7 +11,7 @@ include(CMakeParseArguments)
 
 # Set the default for CMAKE_INSTALL_PREFIX.
 function(SetDefaultCMakeInstallPrefix)
-    get_filename_component(BASE_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
+    get_filename_component(BASE_DIR ${PROJECT_SOURCE_DIR} DIRECTORY)
     # Move one directory up to the folder adjacent to the opensim-core folder.
     get_filename_component(BASE_DIR ${BASE_DIR} DIRECTORY)
     # Default install prefix for OpenSim dependencies. If user changes
@@ -85,7 +85,7 @@ function(AddDependency)
         "Automatically download, configure, build and install ${DEP_NAME}")
 
     if(SUPERBUILD_${DEP_NAME})
-        set(SOURCE_DIR  ${CMAKE_SOURCE_DIR}/${DEP_NAME})
+        set(SOURCE_DIR  ${PROJECT_SOURCE_DIR}/${DEP_NAME})
         set(BINARY_DIR  ${CMAKE_BINARY_DIR}/${DEP_NAME})
         set(INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/${DEP_NAME})
 
@@ -291,8 +291,8 @@ else()
             DEPENDS           colpack
             GIT_REPOSITORY    https://github.com/coin-or/ADOL-C.git
             GIT_TAG           releases/2.6.3
-            #SOURCE_DIR        "${CMAKE_SOURCE_DIR}/adol-c"
-            #BINARY_DIR        "${CMAKE_SOURCE_DIR}/adol-c"
+            #SOURCE_DIR        "${PROJECT_SOURCE_DIR}/adol-c"
+            #BINARY_DIR        "${PROJECT_SOURCE_DIR}/adol-c"
             INSTALL_DIR       "${CMAKE_INSTALL_PREFIX}/adol-c"
             CONFIGURE_COMMAND autoreconf -fi <SOURCE_DIR>
                 COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR>
@@ -314,9 +314,9 @@ else()
         ExternalProject_Add(ipopt
             URL https://www.coin-or.org/download/source/Ipopt/Ipopt-3.12.8.zip
             INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/ipopt"
-            PATCH_COMMAND cd <SOURCE_DIR>/ThirdParty/Metis && patch < ${CMAKE_SOURCE_DIR}/get.Metis.patch
+            PATCH_COMMAND cd <SOURCE_DIR>/ThirdParty/Metis && patch < ${PROJECT_SOURCE_DIR}/get.Metis.patch
                   COMMAND cd <SOURCE_DIR>/ThirdParty/Metis && ./get.Metis
-                  COMMAND cd <SOURCE_DIR>/ThirdParty/Mumps && patch < ${CMAKE_SOURCE_DIR}/get.Mumps.patch
+                  COMMAND cd <SOURCE_DIR>/ThirdParty/Mumps && patch < ${PROJECT_SOURCE_DIR}/get.Mumps.patch
                   COMMAND cd <SOURCE_DIR>/ThirdParty/Mumps && ./get.Mumps
             # GCC 10 generates a warning when compling MUMPS that we must suppress using
             # -fallow-argument-mismatch.

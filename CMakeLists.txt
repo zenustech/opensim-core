@@ -25,6 +25,7 @@ include_directories(
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
     cmake_policy(SET CMP0005 NEW)
+    cmake_policy(SET CMP0079 NEW)
 endif(COMMAND cmake_policy)
 
 message(STATUS "NOTICE: Make sure all OpenSim dependencies are built with the \
@@ -66,7 +67,7 @@ if(Git_FOUND)
     # exists, and returns an error if a tag does not exist.
     execute_process(
             COMMAND "${GIT_EXECUTABLE}" describe --exact-match
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
             RESULT_VARIABLE GIT_DESCRIBE_EXACT_MATCH_RETVAL
             OUTPUT_VARIABLE GIT_TAG
             OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -79,14 +80,14 @@ if(Git_FOUND)
     else()
         execute_process(
                 COMMAND "${GIT_EXECUTABLE}" log -1 --format=%h
-                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                 OUTPUT_VARIABLE GIT_COMMIT_HASH
                 OUTPUT_STRIP_TRAILING_WHITESPACE
         )
         # Prepend date for sorting.
         execute_process(
                 COMMAND "${GIT_EXECUTABLE}" show -s --format=%cd --date=short HEAD
-                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                 OUTPUT_VARIABLE GIT_COMMIT_DATE
                 OUTPUT_STRIP_TRAILING_WHITESPACE
         )
@@ -112,7 +113,7 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     # directory.
     # On Linux, we override the default value because our installation does
     # not yet conform to the Filesystem Hierarchy Standard (FHS).
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}-install" CACHE PATH
+    set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}-install" CACHE PATH
         "The directory in which to install this project." FORCE)
 endif()
 
@@ -665,7 +666,7 @@ if(UNIX) # Linux and macOS
 endif()
 
 set(OPENSIM_DEPENDENCIES_DIR 
-    "${CMAKE_SOURCE_DIR}/../opensim_dependencies_install"
+    "${PROJECT_SOURCE_DIR}/../opensim_dependencies_install"
     CACHE 
     PATH
     "Directory containing installed binaries of OpenSim dependencies. Set this
@@ -751,8 +752,10 @@ else()
     set(WITH_BTK false)
 endif()
 
-add_subdirectory(dependencies/spdlog)
-add_library(spdlog::spdlog ALIAS spdlog)
+if (NOT TARGET spdlog)
+    add_subdirectory(dependencies/spdlog)
+    add_library(spdlog::spdlog ALIAS spdlog)
+endif()
 #find_package(spdlog REQUIRED HINTS "${OPENSIM_DEPENDENCIES_DIR}/spdlog")
 
 
@@ -1031,7 +1034,7 @@ add_definitions(-DOSIM_SYS_INFO=${OPENSIM_SYSTEM_INFO}
 # This directory contains files (e.g., .osim) that multiple tests may want to
 # use. See the OpenSimCopySharedTestFiles function in
 # cmake/OpenSimMacros.cmake.
-set(OPENSIM_SHARED_TEST_FILES_DIR "${CMAKE_SOURCE_DIR}/OpenSim/Tests/shared")
+set(OPENSIM_SHARED_TEST_FILES_DIR "${PROJECT_SOURCE_DIR}/OpenSim/Tests/shared")
 
 add_subdirectory(Vendors)
 
@@ -1043,6 +1046,7 @@ endif()
 
 add_subdirectory(cmake)
 #add_subdirectory(doc)
+target_link_libraries(osimCommon PUBLIC SimTKcommon SimTKmath Simbody)
 
 # Print a list of the dependencies that were found, and the features the user
 # chose.

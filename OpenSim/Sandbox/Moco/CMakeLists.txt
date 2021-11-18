@@ -12,7 +12,7 @@ function(MocoAddSandboxExecutable)
             FOLDER "Sandbox/Moco")
     target_link_libraries(${MOCOSAND_NAME} ${MOCOSAND_LIB_DEPENDS})
     target_include_directories(${MOCOSAND_NAME} PRIVATE
-            ${CMAKE_SOURCE_DIR}/Sandbox/Moco/shared)
+        ${PROJECT_SOURCE_DIR}/Sandbox/Moco/shared)
     file(COPY ${MOCOSAND_RESOURCES} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 endfunction()
 

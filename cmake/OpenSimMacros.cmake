@@ -474,7 +474,7 @@ function(OpenSimAddExampleCXX)
             "${CMAKE_INSTALL_PREFIX}/${_example_install_dir}"
             "${CMAKE_INSTALL_PREFIX}")
     configure_file(
-        "${CMAKE_SOURCE_DIR}/OpenSim/Examples/ExampleCMakeListsToInstall.txt.in"
+        "${PROJECT_SOURCE_DIR}/OpenSim/Examples/ExampleCMakeListsToInstall.txt.in"
         "${CMAKE_CURRENT_BINARY_DIR}/CMakeListsToInstall.txt"
         @ONLY)
 
@@ -541,7 +541,7 @@ function(OpenSimAddPluginExampleCXX)
             "${CMAKE_INSTALL_PREFIX}/${_example_install_dir}"
             "${CMAKE_INSTALL_PREFIX}")
     configure_file(
-        "${CMAKE_SOURCE_DIR}/OpenSim/Examples/PluginExampleCMakeListsToInstall.txt.in"
+        "${PROJECT_SOURCE_DIR}/OpenSim/Examples/PluginExampleCMakeListsToInstall.txt.in"
         "${CMAKE_CURRENT_BINARY_DIR}/CMakeListsToInstall.txt"
         @ONLY)
 
