@@ -196,26 +196,26 @@ set(SimTKSIMBODY_STATIC_LIBRARY_VN ${SimTKSIMBODY_LIBRARY_NAME_VN}_static)
 # Caution: this variable is automatically created by the CMake
 # enable_testing() command, but we'll take it over here for
 # our own purposes too.
-set(BUILD_TESTING ON CACHE BOOL
+set(BUILD_TESTING OFF CACHE BOOL
     "Control building of Simbody test programs.
     To actually build tests, one
     or both of BUILD_TESTS_AND_EXAMPLES_STATIC and
     BUILD_TESTS_AND_EXAMPLES_SHARED must be ON.")
 
-set(BUILD_EXAMPLES ON CACHE BOOL
+set(BUILD_EXAMPLES OFF CACHE BOOL
     "Control building of Simbody example programs.
     To actually build examples, one
     or both of BUILD_TESTS_AND_EXAMPLES_STATIC and
     BUILD_TESTS_AND_EXAMPLES_SHARED must be ON.")
 
 # Set whether to build the Visualizer code.
-set(BUILD_VISUALIZER ON CACHE BOOL
+set(BUILD_VISUALIZER OFF CACHE BOOL
     "Control building of the visualizer component.")
 
 # Turning this off reduces the build time (and space) substantially,
 # but you may miss the occasional odd bug. Also currently on Windows it
 # is easier to debug the static tests than the DLL-linked ones.
-set(BUILD_TESTS_AND_EXAMPLES_STATIC ON CACHE BOOL
+set(BUILD_TESTS_AND_EXAMPLES_STATIC OFF CACHE BOOL
     "If BUILDING_STATIC_LIBRARIES and BUILD_TESTING or BUILD_EXAMPLES, build
     statically-linked test and example programs too? On Windows,
     statically-linked tests may be easier to debug than DLL-linked tests.
@@ -223,7 +223,7 @@ set(BUILD_TESTS_AND_EXAMPLES_STATIC ON CACHE BOOL
 mark_as_advanced(BUILD_TESTS_AND_EXAMPLES_STATIC)
 
 if(BUILD_DYNAMIC_LIBRARIES)
-    set(BUILD_TESTS_AND_EXAMPLES_SHARED ON CACHE BOOL
+    set(BUILD_TESTS_AND_EXAMPLES_SHARED OFF CACHE BOOL
         "If BUILD_TESTING or BUILD_EXAMPLES, build dynamically-linked ones?")
 else()
     set(BUILD_TESTS_AND_EXAMPLES_SHARED OFF)

@@ -10,6 +10,11 @@ project(OpenSim)
 
 cmake_minimum_required(VERSION 3.2)
 set(CMAKE_BUILD_TYPE Release)
+set(BUILD_TESTING OFF CACHE BOOL
+    "Control building of Simbody te OpenSimmmmm
+    To actually build tests, one
+    or both of BUILD_TESTS_AND_EXAMPLES_STATIC and
+    BUILD_TESTS_AND_EXAMPLES_SHARED must be ON.")
 
 if (WIN32)
     include_directories(dependencies/simbody/Platform/Windows/include)
